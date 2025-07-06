@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Improved Password Validator</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      padding: 40px;
+      background-color: #f5f5f5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    #password-rules {
+      position: absolute;
+      top: 0;
+      left: 320px;
+      width: 280px;
+      background: white;
+      border-radius: 8px;
+      padding: 15px 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #4a90e2;
+      display: none;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform: translateX(20px);
+      opacity: 0;
+      z-index: 10;
+    }
+
+    #password-rules.show {
+      display: block;
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .rule {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .rule span {
+      display: inline-block;
+      width: 20px;
+      text-align: center;
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .valid {
+      color: green;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    #match-message {
+      font-size: 14px;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Password Validator Form</h2>
+
+  <div class="form-group">
+    <label for="password">Enter Password:</label><br>
+    <input type="password" id="password"
+           onfocus="showRules()"
+           onblur="hideRulesWithDelay()"
+           oninput="validatePassword()" />
+    
+    <div id="password-rules">
+      <div class="rule" id="rule-length"><span>❌</span>Minimum 8 characters</div>
+      <div class="rule" id="rule-uppercase"><span>❌</span>At least one uppercase letter</div>
+      <div class="rule" id="rule-lowercase"><span>❌</span>At least one lowercase letter</div>
+      <div class="rule" id="rule-number"><span>❌</span>At least one number</div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="confirm">Confirm Password:</label><br>
+    <input type="password" id="confirm" oninput="validateConfirm()" />
+    <div id="match-message"></div>
+  </div>
+
+  <script>
+    let hideTimeout;
+
+    function showRules() {
+      clearTimeout(hideTimeout);
+      const rules = document.getElementById('password-rules');
+      rules.classList.add('show');
+    }
+
+    function hideRulesWithDelay() {
+      hideTimeout = setTimeout(() => {
+        document.getElementById('password-rules').classList.remove('show');
+      }, 200);
+    }
+
+    function validatePassword() {
+      const pwd = document.getElementById('password').value;
+
+      updateRule('rule-length', pwd.length >= 8);
+      updateRule('rule-uppercase', /[A-Z]/.test(pwd));
+      updateRule('rule-lowercase', /[a-z]/.test(pwd));
+      updateRule('rule-number', /[0-9]/.test(pwd));
+
+      validateConfirm();
+    }
+
+    function validateConfirm() {
+      const pwd = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      const matchMsg = document.getElementById('match-message');
+
+      if (confirm.length === 0) {
+        matchMsg.innerText = '';
+        return;
+      }
+
+      if (pwd === confirm) {
+        matchMsg.style.color = 'green';
+        matchMsg.innerText = '✅ Passwords match';
+      } else {
+        matchMsg.style.color = 'red';
+        matchMsg.innerText = '❌ Passwords do not match';
+      }
+    }
+
+    function updateRule(ruleId, isValid) {
+      const rule = document.getElementById(ruleId);
+      const icon = rule.querySelector('span');
+
+      if (isValid) {
+        icon.innerText = '✅';
+        rule.classList.remove('invalid');
+        rule.classList.add('valid');
+      } else {
+        icon.innerText = '❌';
+        rule.classList.remove('valid');
+        rule.classList.add('invalid');
+      }
+    }
+  </script>
+
+</body>
+</html>

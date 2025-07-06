@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Complete Password Validator</title>
+  <style>
+    :root {
+      --popup-gap: 20px; /* 🔧 Adjustable gap between input and popup */
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      padding: 40px;
+      background-color: #f0f2f5;
+    }
+
+    .form-group {
+      margin-bottom: 30px;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    #password-rules {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + var(--popup-gap));
+      transform: translateY(-50%) translateX(30px);
+      width: 280px;
+      background: white;
+      border-radius: 8px;
+      padding: 15px 20px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+      border-left: 4px solid #4a90e2;
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    #password-rules.show {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      pointer-events: auto;
+    }
+
+    #password-rules::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -18px;
+      transform: translateY(-50%);
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-right: 14px solid #4a90e2;
+    }
+
+    .rule {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .rule span {
+      display: inline-block;
+      width: 20px;
+      text-align: center;
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .valid {
+      color: green;
+    }
+
+    .invalid {
+      color: red;
+    }
+
+    #match-message {
+      font-size: 14px;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+	
+	@media (max-width: 600px) {
+  .password-wrapper {
+    display: block;
+    width: 100%;
+  }
+
+  input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #password-rules {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin-top: 10px;
+    border-left: none;
+    border-top: 4px solid #4a90e2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #password-rules::before {
+    display: none; /* Hide the arrow on mobile */
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <h2>Password Validator Form</h2>
+
+  <div class="form-group">
+    <label for="password">Enter Password:</label><br>
+    <div class="password-wrapper">
+      <input type="password" id="password"
+             onfocus="showRules()"
+             onblur="hideRulesWithDelay()"
+             oninput="validatePassword()" />
+
+      <div id="password-rules">
+        <div class="rule" id="rule-length"><span>❌</span>Minimum 8 characters</div>
+        <div class="rule" id="rule-uppercase"><span>❌</span>At least one uppercase letter</div>
+        <div class="rule" id="rule-lowercase"><span>❌</span>At least one lowercase letter</div>
+        <div class="rule" id="rule-number"><span>❌</span>At least one number</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="confirm">Confirm Password:</label><br>
+    <input type="password" id="confirm" oninput="validateConfirm()" />
+    <div id="match-message"></div>
+  </div>
+
+  <script>
+    let hideTimeout;
+
+    function showRules() {
+      clearTimeout(hideTimeout);
+      document.getElementById('password-rules').classList.add('show');
+    }
+
+    function hideRulesWithDelay() {
+      hideTimeout = setTimeout(() => {
+        document.getElementById('password-rules').classList.remove('show');
+      }, 200);
+    }
+
+    function validatePassword() {
+      const pwd = document.getElementById('password').value;
+
+      updateRule('rule-length', pwd.length >= 8);
+      updateRule('rule-uppercase', /[A-Z]/.test(pwd));
+      updateRule('rule-lowercase', /[a-z]/.test(pwd));
+      updateRule('rule-number', /[0-9]/.test(pwd));
+
+      validateConfirm();
+    }
+
+    function validateConfirm() {
+      const pwd = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      const matchMsg = document.getElementById('match-message');
+
+      if (confirm.length === 0) {
+        matchMsg.innerText = '';
+        return;
+      }
+
+      if (pwd === confirm) {
+        matchMsg.style.color = 'green';
+        matchMsg.innerText = '✅ Passwords match';
+      } else {
+        matchMsg.style.color = 'red';
+        matchMsg.innerText = '❌ Passwords do not match';
+      }
+    }
+
+    function updateRule(ruleId, isValid) {
+      const rule = document.getElementById(ruleId);
+      const icon = rule.querySelector('span');
+
+      if (isValid) {
+        icon.innerText = '✅';
+        rule.classList.remove('invalid');
+        rule.classList.add('valid');
+      } else {
+        icon.innerText = '❌';
+        rule.classList.remove('valid');
+        rule.classList.add('invalid');
+      }
+    }
+  </script>
+
+</body>
+</html>
