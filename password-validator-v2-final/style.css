@@ -1,0 +1,169 @@
+/* Core styles for Password Validator - Final Version */
+:root {
+  --popup-gap: 20px;
+  --dot-size: 16px;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  padding: 40px;
+  background-color: #f0f2f5;
+}
+
+.form-group {
+  margin-bottom: 30px;
+}
+
+.password-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+input[type="password"],
+input[type="text"] {
+  padding: 10px 40px 10px 10px;
+  font-size: 16px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+}
+
+.toggle-visibility {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  fill: #555;
+  transition: transform 0.3s ease;
+}
+
+.toggle-visibility:hover {
+  transform: translateY(-50%) scale(1.2);
+}
+
+#password-rules {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--popup-gap));
+  transform: translateY(-50%) translateX(30px);
+  width: 280px;
+  background: white;
+  border-radius: 8px;
+  padding: 15px 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  border-left: 4px solid #4a90e2;
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#password-rules.show {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  pointer-events: auto;
+}
+
+#password-rules::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -18px;
+  transform: translateY(-50%);
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-right: 14px solid #4a90e2;
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.rule span {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.valid {
+  color: green;
+}
+
+.invalid {
+  color: red;
+}
+
+#match-message {
+  font-size: 14px;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.char-count {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  display: none;
+}
+
+.strength-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  min-height: var(--dot-size);
+  visibility: hidden;
+}
+
+.strength-dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: #ccc;
+  margin-right: 6px;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.strength-label {
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 90px;
+}
+
+.submit-section {
+  margin-top: 20px;
+}
+
+.submit-section button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4a90e2;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submit-section button:hover {
+  background-color: #3b7dd8;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  display: none;
+}
